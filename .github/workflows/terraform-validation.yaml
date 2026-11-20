@@ -7,6 +7,10 @@ on:
     branches:
 
       - main
+    
+    paths:
+      - '**/project2'
+      - '**/project3'
 
   pull_request:
 
