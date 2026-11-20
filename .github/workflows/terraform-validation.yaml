@@ -9,8 +9,8 @@ on:
       - main
     
     paths:
+      - '**/project1'
       - '**/project2'
-      - '**/project3'
 
   pull_request:
 
