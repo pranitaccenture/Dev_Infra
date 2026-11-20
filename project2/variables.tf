@@ -6,5 +6,5 @@ variable "aws_region" {
 variable "bucket_name" {
  description = "Globally unique name for the S3 static website bucket"
  type        = string
- default     = "pranit-das-dev-infra-project2-19112026" # Change this to a unique name
+ default     = "pranit-das-dev-infra-project2-20112026" # Change this to a unique name
 }
