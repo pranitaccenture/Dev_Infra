@@ -1,0 +1,23 @@
+---
+- name: Configure Apache Web Server
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update package repository
+      apt:
+        update_cache: yes
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+    - name: Start and enable Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+    - name: Create custom webpage
+      copy:
+        content: |
+          <h1>Welcome to Ansible Automation!</h1>
+          <p>Apache configured successfully.</p>
+         dest: /var/www/html/index.html
