@@ -31,6 +31,14 @@ jobs:
       - name: Setup Terraform
 
         uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+          aws-output-format: json
         
       - name: Terraform Initialize
 
@@ -43,3 +51,19 @@ jobs:
       - name: Terraform Validate
 
         run: terraform validate -no-color
+
+      - name: Terraform Plan
+
+        run: terraform plan -out=tfplan
+      
+      - name: Terraform Apply
+
+        if: github.event.pull_request.merged == true
+
+        run: terraform apply -auto-approve tfplan
+      
+      - name: Terraform Destroy
+
+        if: github.event_name == 'workflow_dispatch' || github.event.input.action == 'destroy'
+
+        run: terraform destroy -auto-approve
