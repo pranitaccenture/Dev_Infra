@@ -17,11 +17,11 @@ resource "aws_instance" "web_server" {
 }
 # Create an SNS Topic for Alarm Notifications
 resource "aws_sns_topic" "cpu_alerts" {
- name = "ec2-cpu-spike-alerts"
+ name = "pranit-ec2-cpu-spike-alerts"
 }
 # Create the CloudWatch CPU Alarm
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
- alarm_name          = "ec2-high-cpu-utilization"
+ alarm_name          = "pranit-ec2-high-cpu-utilization"
  comparison_operator = "GreaterThanThreshold"
  evaluation_periods  = 1
  metric_name         = "CPUUtilization"
