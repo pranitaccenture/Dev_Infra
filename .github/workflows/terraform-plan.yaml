@@ -43,13 +43,6 @@ jobs:
 
         uses: hashicorp/setup-terraform@v3
 
-      - name: Configure AWS
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-        
       - name: Terraform Initialize
 
         run: terraform init -backend=false -input=false
@@ -62,12 +55,32 @@ jobs:
 
         run: terraform validate -no-color
 
-      - name: Terraform Plan
+      - name: Check AWS credentials
+        id: aws-credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [[ -n "$AWS_ACCESS_KEY_ID" && -n "$AWS_SECRET_ACCESS_KEY" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::AWS credentials are unavailable; skipping Terraform plan."
+          fi
 
+      - name: Configure AWS
+        if: steps.aws-credentials.outputs.available == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Terraform Plan
+        if: steps.aws-credentials.outputs.available == 'true'
         run: terraform plan -out=tfplan.binary
 
       - name: Upload Terraform Plan Artifact
-
+        if: steps.aws-credentials.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-artifact
