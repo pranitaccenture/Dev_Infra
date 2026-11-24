@@ -18,6 +18,9 @@ permissions:
 
   contents: read
 
+env:
+  WORK_DIR: project2
+
 jobs:
 
   terraform-validation:
@@ -28,7 +31,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: project2
+        working-directory: ${{ env.WORK_DIR }}
 
     steps:
 
@@ -46,7 +49,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
-          aws-output-format: json
         
       - name: Terraform Initialize
 
@@ -69,5 +71,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-artifact
-          path: tfplan.binary
+          path: ${{ env.WORK_DIR }}/tfplan.binary
  
