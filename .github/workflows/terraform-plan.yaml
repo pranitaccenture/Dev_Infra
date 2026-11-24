@@ -29,6 +29,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: infra-prod
+
     defaults:
       run:
         working-directory: ${{ env.WORK_DIR }}
